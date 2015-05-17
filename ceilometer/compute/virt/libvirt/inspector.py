@@ -144,8 +144,9 @@ class LibvirtInspector(virt_inspector.Inspector):
                 continue
 
             vnic_uuid = tree.xpath(
-                '//metadata/neutron_interfaces//parameters[@mac=\"%s\"]' %
-                mac_address)
+                '//metadata/neutron:interfaces/neutron:parameters[@mac=\"%s\"]'
+                % mac_address,
+                namespaces={'neutron': 'NEUTRON_URI'})
             if vnic_uuid:
                 vnic_uuid = vnic_uuid[0].get('uuid')
             else:
