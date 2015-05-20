@@ -74,7 +74,7 @@ MemoryUsageStats = collections.namedtuple('MemoryUsageStats', ['usage'])
 # parameters: miscellaneous parameters
 #
 Interface = collections.namedtuple('Interface', ['name', 'mac',
-                                                 'fref', 'parameters'])
+                                                 'uuid', 'parameters'])
 
 
 # Named tuple representing vNIC statistics.

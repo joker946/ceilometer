@@ -49,11 +49,8 @@ class _Base(plugin.ComputePollster):
         compute_util.add_reserved_user_metadata(instance.metadata,
                                                 resource_metadata)
 
-        if vnic_data.fref is not None:
-            rid = vnic_data.fref
-        else:
-            instance_name = util.instance_name(instance)
-            rid = "%s-%s-%s" % (instance_name, instance.id, vnic_data.name)
+        instance_name = util.instance_name(instance)
+        rid = "%s-%s-%s" % (instance_name, instance.id, vnic_data.name)
 
         return sample.Sample(
             name=name,

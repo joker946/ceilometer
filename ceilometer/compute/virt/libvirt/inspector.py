@@ -41,6 +41,7 @@ libvirt_opts = [
 
 CONF = cfg.CONF
 CONF.register_opts(libvirt_opts)
+NEUTRON_NS = "http://openstack.org/xmlns/libvirt/neutron/1.0"
 
 
 def retry_on_disconnect(function):
@@ -142,14 +143,21 @@ class LibvirtInspector(virt_inspector.Inspector):
                 mac_address = mac.get('address')
             else:
                 continue
-            fref = iface.find('filterref')
-            if fref is not None:
-                fref = fref.get('filter')
+
+            vnic_uuid = tree.xpath(
+                '//metadata/neutron:interfaces/neutron:interface[@mac=\"%s\"]'
+                % mac_address,
+                namespaces={'neutron': NEUTRON_NS})
+            if vnic_uuid:
+                vnic_uuid = vnic_uuid[0].get('uuid')
+            else:
+                continue
 
             params = dict((p.get('name').lower(), p.get('value'))
                           for p in iface.findall('filterref/parameter'))
             interface = virt_inspector.Interface(name=name, mac=mac_address,
-                                                 fref=fref, parameters=params)
+                                                 uuid=vnic_uuid,
+                                                 parameters=params)
             dom_stats = domain.interfaceStats(name)
             stats = virt_inspector.InterfaceStats(rx_bytes=dom_stats[0],
                                                   rx_packets=dom_stats[1],
