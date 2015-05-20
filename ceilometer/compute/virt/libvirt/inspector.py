@@ -41,6 +41,7 @@ libvirt_opts = [
 
 CONF = cfg.CONF
 CONF.register_opts(libvirt_opts)
+NEUTRON_NS = "http://openstack.org/xmlns/libvirt/neutron/1.0"
 
 
 def retry_on_disconnect(function):
@@ -144,9 +145,9 @@ class LibvirtInspector(virt_inspector.Inspector):
                 continue
 
             vnic_uuid = tree.xpath(
-                '//metadata/neutron:interfaces/neutron:parameters[@mac=\"%s\"]'
+                '//metadata/neutron:interfaces/neutron:interface[@mac=\"%s\"]'
                 % mac_address,
-                namespaces={'neutron': 'NEUTRON_URI'})
+                namespaces={'neutron': NEUTRON_NS})
             if vnic_uuid:
                 vnic_uuid = vnic_uuid[0].get('uuid')
             else:
